@@ -13,8 +13,8 @@ public interface ItemService {
 
     List<Item> getUsersItem(Long userId);
 
-    Item updateItem (Long userId, Long itemId, Item item);
+    Item updateItem(Long userId, Long itemId, Item item);
 
-    List<Item> searchItem (String text);
+    List<Item> searchItem(String text);
 
 }

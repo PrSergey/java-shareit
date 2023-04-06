@@ -15,7 +15,7 @@ public class ItemMapper {
         );
     }
 
-    public static Item fromItemDto(ItemDto itemDto){
+    public static Item fromItemDto(ItemDto itemDto) {
         return new Item(
                 itemDto.getName(),
                 itemDto.getDescription(),

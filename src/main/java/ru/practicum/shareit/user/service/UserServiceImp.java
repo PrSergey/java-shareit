@@ -31,7 +31,7 @@ public class UserServiceImp {
         return userStorage.update(userId, user);
     }
 
-    public User deleteUser(Long userId){
+    public User deleteUser(Long userId) {
         return userStorage.deleteUser(userId);
     }
 

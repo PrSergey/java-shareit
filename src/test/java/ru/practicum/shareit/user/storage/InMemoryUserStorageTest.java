@@ -1,6 +1,5 @@
 package ru.practicum.shareit.user.storage;
 
-import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,18 +14,18 @@ class InMemoryUserStorageTest {
 
     InMemoryUserStorage inMemoryUserStorage;
 
-    public User createUser(){
+    public User createUser() {
         return new User(null, "UserTest", "email@user.ru");
     }
 
     @BeforeEach
-    public void before(){
+    public void before() {
         inMemoryUserStorage = new InMemoryUserStorage();
     }
 
 
     @Test
-    void shouldCreateUser () {
+    void shouldCreateUser() {
         User user = inMemoryUserStorage.add(createUser());
         Assertions.assertEquals(user.getName(), "UserTest");
         Assertions.assertEquals(user.getEmail(), "email@user.ru");
@@ -48,14 +47,14 @@ class InMemoryUserStorageTest {
     }
 
     @Test
-    void ShouldExceptionNotUser() {
+    void shouldExceptionNotUser() {
         ExistenceException exception = Assertions.assertThrows(ExistenceException.class,
                 () -> inMemoryUserStorage.getById(2L));
         Assertions.assertEquals("Пользвателя с id=2 не найден в базе.", exception.getMessage());
     }
 
     @Test
-    void ShouldGetAllUser() {
+    void shouldGetAllUser() {
         Assertions.assertEquals(inMemoryUserStorage.getAll().size(), 0);
         inMemoryUserStorage.add(createUser());
         Assertions.assertEquals(inMemoryUserStorage.getAll().size(), 1);

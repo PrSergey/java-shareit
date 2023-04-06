@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.request.ItemRequest;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -20,7 +19,7 @@ public class Item {
 
     private Long owner;
 
-    @Size(max=100)
+    @Size(max = 100)
     private String name;
 
     private String description;
