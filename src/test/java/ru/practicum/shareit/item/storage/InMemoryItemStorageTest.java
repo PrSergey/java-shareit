@@ -6,80 +6,83 @@ import org.junit.jupiter.api.Test;
 import ru.practicum.shareit.exception.ExistenceException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.service.ItemServiceImp;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.InMemoryUserStorage;
 
 class InMemoryItemStorageTest {
 
-    InMemoryItemStorage itemStorage;
+    ItemServiceImp itemServiceImp;
     InMemoryUserStorage inMemoryUserStorage;
+    ItemStorage itemStorage;
 
     @BeforeEach
     void setUp() {
         itemStorage = new InMemoryItemStorage();
         inMemoryUserStorage = new InMemoryUserStorage();
+        itemServiceImp = new ItemServiceImp(itemStorage, inMemoryUserStorage);
         inMemoryUserStorage.add(new User(null, "UserTest", "email@user.ru"));
     }
 
     @Test
     void addItemWithoutAvailable() {
         ValidationException exception = Assertions.assertThrows(ValidationException.class,
-                () -> itemStorage.add(1L, new Item("nameItem","descriptionItem", null)));
+                () -> itemServiceImp.add(1L, new Item("nameItem","descriptionItem", null)));
         Assertions.assertEquals("При добавление вещи, не указан статус доступности", exception.getMessage());
     }
 
     @Test
     void addItemWithoutName() {
         ValidationException exception = Assertions.assertThrows(ValidationException.class,
-                () -> itemStorage.add(1L, new Item(null,"descriptionItem", true)));
+                () -> itemServiceImp.add(1L, new Item(null,"descriptionItem", true)));
         Assertions.assertEquals("При добавление вещи, не указано имя", exception.getMessage());
     }
 
     @Test
     void addItemWithoutDescription() {
         ValidationException exception = Assertions.assertThrows(ValidationException.class,
-                () -> itemStorage.add(1L, new Item("nameItem",null, true)));
+                () -> itemServiceImp.add(1L, new Item("nameItem",null, true)));
         Assertions.assertEquals("При добавление вещи, нет описания", exception.getMessage());
     }
 
     @Test
     void addItem() {
-        itemStorage.add(1L, new Item("nameItem","descriptionItem", true));
-        Assertions.assertEquals(itemStorage.getUsersItem(1L).size(), 1);
+        itemServiceImp.add(1L, new Item("nameItem","descriptionItem", true));
+        Assertions.assertEquals(itemServiceImp.getUsersItem(1L).size(), 1);
     }
 
 
     @Test
     void getItemBeforeAdd() {
         ExistenceException exception = Assertions.assertThrows(ExistenceException.class,
-                () -> itemStorage.getItem(1L, 1L));
+                () -> itemServiceImp.getItem(1L, 1L));
         Assertions.assertEquals("Вещи с id=1 не найдено.", exception.getMessage());
     }
 
     @Test
     void getItem() {
-        Assertions.assertEquals(itemStorage.getUsersItem(1L).size(), 0);
-        itemStorage.add(1L, new Item("nameItem","descriptionItem", true));
-        itemStorage.getItem(1L, 1L);
-        Assertions.assertEquals(itemStorage.getUsersItem(1L).size(), 1);
-        Assertions.assertEquals(itemStorage.getItem(1L, 1L).getName(), "nameItem");
+        Assertions.assertEquals(itemServiceImp.getUsersItem(1L).size(), 0);
+        itemServiceImp.add(1L, new Item("nameItem","descriptionItem", true));
+        itemServiceImp.getItem(1L, 1L);
+        Assertions.assertEquals(itemServiceImp.getUsersItem(1L).size(), 1);
+        Assertions.assertEquals(itemServiceImp.getItem(1L, 1L).getName(), "nameItem");
     }
 
     @Test
     void updateItem() {
-        itemStorage.add(1L, new Item("nameItem","descriptionItem", true));
-        Assertions.assertEquals(itemStorage.getItem(1L, 1L).getName(), "nameItem");
-        itemStorage.updateItem(1L,1L,
+        itemServiceImp.add(1L, new Item("nameItem","descriptionItem", true));
+        Assertions.assertEquals(itemServiceImp.getItem(1L, 1L).getName(), "nameItem");
+        itemServiceImp.updateItem(1L,1L,
                 new Item("nameNewItem","descriptionItem", true));
-        Assertions.assertEquals(itemStorage.getItem(1L, 1L).getName(), "nameNewItem");
+        Assertions.assertEquals(itemServiceImp.getItem(1L, 1L).getName(), "nameNewItem");
     }
 
     @Test
     void searchItem() {
-        itemStorage.add(1L, new Item("nameItem","descriptionItem", true));
-        Assertions.assertEquals(itemStorage.searchItem("SearCHitem").size(), 0);
-        itemStorage.updateItem(1L,1L,
+        itemServiceImp.add(1L, new Item("nameItem","descriptionItem", true));
+        Assertions.assertEquals(itemServiceImp.searchItem("SearCHitem").size(), 0);
+        itemServiceImp.updateItem(1L,1L,
                 new Item("searchitem","descriptionItem", true));
-        Assertions.assertEquals(itemStorage.searchItem("SearCHitem").size(), 1);
+        Assertions.assertEquals(itemServiceImp.searchItem("SearCHitem").size(), 1);
     }
 }
