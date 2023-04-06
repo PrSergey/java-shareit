@@ -5,10 +5,7 @@ import ru.practicum.shareit.exception.ExistenceException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.model.Item;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
@@ -46,12 +43,12 @@ public class InMemoryItemStorage implements ItemStorage {
     @Override
     public List<Item> getUsersItem(Long userId) {
         List<Item> usersItems = new ArrayList<>(items.values());
-        return usersItems.stream().filter(i -> i.getOwner() == userId).collect(Collectors.toList());
+        return usersItems.stream().filter(i -> Objects.equals(i.getOwner(), userId)).collect(Collectors.toList());
     }
 
     @Override
     public Item updateItem(Long userId, Long itemId, Item item) {
-        if (items.get(itemId).getOwner() != userId) {
+        if (!Objects.equals(items.get(itemId).getOwner(), userId)) {
             throw new ExistenceException("Пользователь с id=" + userId +
                     " не является собствеником вещи с id=" + itemId);
         }
