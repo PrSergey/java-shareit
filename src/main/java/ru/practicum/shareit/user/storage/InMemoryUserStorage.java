@@ -39,7 +39,7 @@ public class InMemoryUserStorage implements UserStorage{
                 .collect(Collectors.toList());
 
         if (users.size()>0 && checkEmail.size()>0){
-            throw new EmailException("Пользователь с email =" + user.getEmail() + " уже существует.");
+            throw new EmailException("Пользователь с email=" + user.getEmail() + " уже существует.");
         }
     }
 
