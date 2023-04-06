@@ -12,20 +12,20 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Repository
-public class InMemoryItemStorage implements ItemStorage{
+public class InMemoryItemStorage implements ItemStorage {
 
     private Long id = 1L;
     private final Map<Long, Item> items = new HashMap<>();
 
     @Override
     public Item add(Long userId, Item item) {
-        if (item.getAvailable() == null ){
+        if (item.getAvailable() == null) {
             throw new ValidationException("При добавление вещи, не указан статус доступности");
         }
-        if (item.getName() == null || item.getName().isBlank()){
+        if (item.getName() == null || item.getName().isBlank()) {
             throw new ValidationException("При добавление вещи, не указано имя");
         }
-        if (item.getDescription() == null ){
+        if (item.getDescription() == null) {
             throw new ValidationException("При добавление вещи, нет описания");
         }
         item.setOwner(userId);
@@ -37,7 +37,7 @@ public class InMemoryItemStorage implements ItemStorage{
 
     @Override
     public Item getItem(Long userId, Long itemId) {
-        if (!items.containsKey(itemId)){
+        if (!items.containsKey(itemId)) {
             throw new ExistenceException("Вещи с id=" + itemId + " не найдено.");
         }
         return items.get(itemId);
@@ -51,17 +51,17 @@ public class InMemoryItemStorage implements ItemStorage{
 
     @Override
     public Item updateItem(Long userId, Long itemId, Item item) {
-        if(items.get(itemId).getOwner() != userId){
+        if (items.get(itemId).getOwner() != userId) {
             throw new ExistenceException("Пользователь с id=" + userId +
                     " не является собствеником вещи с id=" + itemId);
         }
-        if(item.getName() != null){
+        if (item.getName() != null) {
             items.get(itemId).setName(item.getName());
         }
-        if(item.getDescription() != null){
+        if (item.getDescription() != null) {
             items.get(itemId).setDescription(item.getDescription());
         }
-        if(item.getAvailable() != null){
+        if (item.getAvailable() != null) {
             items.get(itemId).setAvailable(item.getAvailable());
         }
         return items.get(itemId);
@@ -72,16 +72,17 @@ public class InMemoryItemStorage implements ItemStorage{
         List<Item> itemWithText = new ArrayList<>();
         String searchText = text.toLowerCase();
 
-        if(text.isBlank()){
+        if (text.isBlank()) {
             return itemWithText;
         }
-        for (Item item: items.values()){
+        for (Item item: items.values()) {
             if (item.getAvailable()
                     && item.getDescription().toLowerCase().contains(searchText)
-                    || item.getName().toLowerCase().contains(searchText)){
+                    || item.getName().toLowerCase().contains(searchText)) {
                 itemWithText.add(item);
             }
         }
         return itemWithText;
     }
+
 }

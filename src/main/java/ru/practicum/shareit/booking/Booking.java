@@ -3,10 +3,9 @@ package ru.practicum.shareit.booking;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.shareit.constant.statusBooking;
+import ru.practicum.shareit.constant.StatusBooking;
 
 import javax.validation.constraints.Future;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
@@ -29,7 +28,7 @@ public class Booking {
     @Future
     private LocalDate end;
     @NotNull
-    private statusBooking confirmation;
+    private StatusBooking confirmation;
 
 
 }

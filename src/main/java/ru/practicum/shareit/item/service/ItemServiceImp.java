@@ -10,7 +10,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class ItemServiceImp implements ItemService{
+public class ItemServiceImp implements ItemService {
 
     ItemStorage itemStorage;
     UserStorage userStorage;
@@ -42,4 +42,5 @@ public class ItemServiceImp implements ItemService{
     public List<Item> searchItem(String text) {
         return itemStorage.searchItem(text);
     }
+
 }
