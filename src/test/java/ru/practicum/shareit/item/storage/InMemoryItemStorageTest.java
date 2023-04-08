@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.practicum.shareit.exception.ExistenceException;
 import ru.practicum.shareit.exception.ValidationException;
-import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemServiceImp;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.InMemoryUserStorage;
@@ -27,27 +27,27 @@ class InMemoryItemStorageTest {
     @Test
     void addItemWithoutAvailable() {
         ValidationException exception = Assertions.assertThrows(ValidationException.class,
-                () -> itemServiceImp.add(1L, new Item("nameItem","descriptionItem", null)));
+                () -> itemServiceImp.add(1L, new ItemDto("nameItem","descriptionItem", null)));
         Assertions.assertEquals("При добавление вещи, не указан статус доступности", exception.getMessage());
     }
 
     @Test
     void addItemWithoutName() {
         ValidationException exception = Assertions.assertThrows(ValidationException.class,
-                () -> itemServiceImp.add(1L, new Item(null,"descriptionItem", true)));
+                () -> itemServiceImp.add(1L, new ItemDto(null,"descriptionItem", true)));
         Assertions.assertEquals("При добавление вещи, не указано имя", exception.getMessage());
     }
 
     @Test
     void addItemWithoutDescription() {
         ValidationException exception = Assertions.assertThrows(ValidationException.class,
-                () -> itemServiceImp.add(1L, new Item("nameItem",null, true)));
+                () -> itemServiceImp.add(1L, new ItemDto("nameItem",null, true)));
         Assertions.assertEquals("При добавление вещи, нет описания", exception.getMessage());
     }
 
     @Test
     void addItem() {
-        itemServiceImp.add(1L, new Item("nameItem","descriptionItem", true));
+        itemServiceImp.add(1L, new ItemDto("nameItem","descriptionItem", true));
         Assertions.assertEquals(itemServiceImp.getUsersItem(1L).size(), 1);
     }
 
@@ -62,7 +62,7 @@ class InMemoryItemStorageTest {
     @Test
     void getItem() {
         Assertions.assertEquals(itemServiceImp.getUsersItem(1L).size(), 0);
-        itemServiceImp.add(1L, new Item("nameItem","descriptionItem", true));
+        itemServiceImp.add(1L, new ItemDto("nameItem","descriptionItem", true));
         itemServiceImp.getItem(1L, 1L);
         Assertions.assertEquals(itemServiceImp.getUsersItem(1L).size(), 1);
         Assertions.assertEquals(itemServiceImp.getItem(1L, 1L).getName(), "nameItem");
@@ -70,19 +70,19 @@ class InMemoryItemStorageTest {
 
     @Test
     void updateItem() {
-        itemServiceImp.add(1L, new Item("nameItem","descriptionItem", true));
+        itemServiceImp.add(1L, new ItemDto("nameItem","descriptionItem", true));
         Assertions.assertEquals(itemServiceImp.getItem(1L, 1L).getName(), "nameItem");
         itemServiceImp.updateItem(1L,1L,
-                new Item("nameNewItem","descriptionItem", true));
+                new ItemDto("nameNewItem","descriptionItem", true));
         Assertions.assertEquals(itemServiceImp.getItem(1L, 1L).getName(), "nameNewItem");
     }
 
     @Test
     void searchItem() {
-        itemServiceImp.add(1L, new Item("nameItem","descriptionItem", true));
+        itemServiceImp.add(1L, new ItemDto("nameItem","descriptionItem", true));
         Assertions.assertEquals(itemServiceImp.searchItem("SearCHitem").size(), 0);
         itemServiceImp.updateItem(1L,1L,
-                new Item("searchitem","descriptionItem", true));
+                new ItemDto("searchitem","descriptionItem", true));
         Assertions.assertEquals(itemServiceImp.searchItem("SearCHitem").size(), 1);
     }
 }
