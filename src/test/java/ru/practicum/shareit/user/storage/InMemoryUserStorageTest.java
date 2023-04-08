@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.practicum.shareit.exception.ExistenceException;
 import ru.practicum.shareit.exception.ValidationException;
+import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserServiceImp;
 
@@ -16,8 +17,8 @@ class InMemoryUserStorageTest {
     UserServiceImp userServiceImp;
     InMemoryUserStorage inMemoryUserStorage;
 
-    public User createUser() {
-        return new User(null, "UserTest", "email@user.ru");
+    public UserDto createUser() {
+        return new UserDto(null, "UserTest", "email@user.ru");
     }
 
     @BeforeEach
@@ -29,14 +30,14 @@ class InMemoryUserStorageTest {
 
     @Test
     void shouldCreateUser() {
-        User user = userServiceImp.add(createUser());
+        UserDto user = userServiceImp.add(createUser());
         Assertions.assertEquals(user.getName(), "UserTest");
         Assertions.assertEquals(user.getEmail(), "email@user.ru");
     }
 
     @Test
     void shouldDontCreateUserWithoutEmail() {
-        User user = new User(null, "UserTest", null);
+        UserDto user = new UserDto(null, "UserTest", null);
         ValidationException exception = Assertions.assertThrows(ValidationException.class,
                 () -> userServiceImp.add(user));
         Assertions.assertEquals("Нет email", exception.getMessage());

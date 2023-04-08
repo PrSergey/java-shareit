@@ -2,7 +2,6 @@ package ru.practicum.shareit.item.storage;
 
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.exception.ExistenceException;
-import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.*;
@@ -16,15 +15,6 @@ public class InMemoryItemStorage implements ItemStorage {
 
     @Override
     public Item add(Long userId, Item item) {
-        if (item.getAvailable() == null) {
-            throw new ValidationException("При добавление вещи, не указан статус доступности");
-        }
-        if (item.getName() == null || item.getName().isBlank()) {
-            throw new ValidationException("При добавление вещи, не указано имя");
-        }
-        if (item.getDescription() == null) {
-            throw new ValidationException("При добавление вещи, нет описания");
-        }
         item.setOwner(userId);
         item.setId(id);
         items.put(id++, item);
@@ -42,26 +32,15 @@ public class InMemoryItemStorage implements ItemStorage {
 
     @Override
     public List<Item> getUsersItem(Long userId) {
-        List<Item> usersItems = new ArrayList<>(items.values());
-        return usersItems.stream().filter(i -> Objects.equals(i.getOwner(), userId)).collect(Collectors.toList());
+        return items.values()
+                .stream()
+                .filter(i -> Objects.equals(i.getOwner(), userId))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Item updateItem(Long userId, Long itemId, Item item) {
-        if (!Objects.equals(items.get(itemId).getOwner(), userId)) {
-            throw new ExistenceException("Пользователь с id=" + userId +
-                    " не является собствеником вещи с id=" + itemId);
-        }
-        if (item.getName() != null) {
-            items.get(itemId).setName(item.getName());
-        }
-        if (item.getDescription() != null) {
-            items.get(itemId).setDescription(item.getDescription());
-        }
-        if (item.getAvailable() != null) {
-            items.get(itemId).setAvailable(item.getAvailable());
-        }
-        return items.get(itemId);
+    public Item updateItem(Long itemId, Item item) {
+        return items.put(itemId, item);
     }
 
     @Override
