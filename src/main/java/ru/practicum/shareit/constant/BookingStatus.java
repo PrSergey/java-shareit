@@ -1,6 +1,6 @@
 package ru.practicum.shareit.constant;
 
-public enum StatusBooking {
+public enum BookingStatus {
 
     WAITING,
 
