@@ -12,9 +12,11 @@ import ru.practicum.shareit.exception.ExistenceException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.model.Comment;
+import ru.practicum.shareit.item.model.ItemWithComments;
 import ru.practicum.shareit.item.storage.CommentRepository;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.storage.ItemWithCommentsRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
@@ -32,6 +34,7 @@ public class ItemServiceImp implements ItemService {
 
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
+    private final ItemWithCommentsRepository itemWithCommentsRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
 
@@ -49,7 +52,7 @@ public class ItemServiceImp implements ItemService {
         if (itemDto.getDescription() == null) {
             throw new ValidationException("При добавление вещи, нет описания");
         }
-        getAndCheckUserFromMemory(userId);
+        checkUserFromMemory(userId);
 
         Item item = ItemMapper.fromItemDto(itemDto);
         item.setOwner(userId);
@@ -60,33 +63,50 @@ public class ItemServiceImp implements ItemService {
     @Transactional(readOnly = true)
     @Override
     public ItemResponseDto getItem(Long userId, Long itemId) {
-        getAndCheckUserFromMemory(userId);
-        Item item = itemRepository.findById(itemId)
+        checkUserFromMemory(userId);
+        ItemWithComments item = itemWithCommentsRepository.findById(itemId)
                 .orElseThrow(() -> new ExistenceException("Вещь с id=" + itemId + " не найден в базе."));
-        List<Comment> comments = commentRepository.findByItem_Id(itemId);
 
         ItemResponseDto itemResponseDto;
         if (userId.equals(item.getOwner())) {
             BookingForItemDto last = getLastBookingByItemId(itemId);
             BookingForItemDto next = getNextBookingByItemId(itemId);
-            itemResponseDto = ItemMapper.toItemWithBookingDto(item, last, next, comments.stream()
-                    .map(CommentsMapper::toCommentResponseDto).collect(Collectors.toList()));
+            itemResponseDto = ItemMapper.toItemWithBookingDto(item, last, next);
         } else {
-            itemResponseDto = ItemMapper.toItemWithBookingDto(item, comments.stream()
-                    .map(CommentsMapper::toCommentResponseDto).collect(Collectors.toList()));
+            itemResponseDto = ItemMapper.toItemWithBookingDto(item);
         }
 
         return itemResponseDto;
 
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public List<ItemResponseDto> getUsersItem(Long userId) {
+        checkUserFromMemory(userId);
+
+        List<ItemResponseDto> items = new ArrayList<>();
+        List<ItemWithComments> itemsInMemory = itemWithCommentsRepository.findAllByOwner(userId);
+        for (ItemWithComments item: itemsInMemory) {
+            BookingForItemDto last = new BookingForItemDto();
+            BookingForItemDto next = new BookingForItemDto();
+            if (item.getOwner().equals(userId)) {
+                next = getNextBookingByItemId(item.getId());
+                last = getLastBookingByItemId(item.getId());
+            }
+            items.add(ItemMapper.toItemWithBookingDto(item, last, next));
+        }
+
+        return items.stream().sorted(Comparator.comparing(ItemResponseDto::getId)).collect(Collectors.toList());
+    }
+
     private BookingForItemDto getLastBookingByItemId(Long itemId) {
         Booking lastBooking;
         BookingForItemDto last = null;
-        if (!bookingRepository.findByItem_IdAndStartIsBeforeAndStatus(itemId, LocalDateTime.now(),
-                BookingStatus.APPROVED, Sort.by(Sort.Direction.DESC, "start")).isEmpty()) {
-            lastBooking = bookingRepository.findByItem_IdAndStartIsBeforeAndStatus(itemId, LocalDateTime.now(),
-                    BookingStatus.APPROVED, Sort.by(Sort.Direction.DESC, "start")).get(0);
+        List<Booking> bookingInMemory = bookingRepository.findByItem_IdAndStartIsBeforeAndStatus(itemId, LocalDateTime.now(),
+                BookingStatus.APPROVED, Sort.by(Sort.Direction.DESC, "start"));
+        if (!bookingInMemory.isEmpty()) {
+            lastBooking = bookingInMemory.get(0);
             last = new BookingForItemDto(lastBooking.getId(), lastBooking.getBooker().getId());
         }
         return last;
@@ -95,10 +115,10 @@ public class ItemServiceImp implements ItemService {
     private BookingForItemDto getNextBookingByItemId(Long itemId) {
         Booking nextBooking;
         BookingForItemDto next = null;
-        if (!bookingRepository.findByItem_IdAndStartIsAfterAndStatus(itemId, LocalDateTime.now(),
-                BookingStatus.APPROVED, Sort.by(Sort.Direction.ASC, "start")).isEmpty()) {
-            nextBooking = bookingRepository.findByItem_IdAndStartIsAfterAndStatus(itemId, LocalDateTime.now(),
-                    BookingStatus.APPROVED, Sort.by(Sort.Direction.ASC, "start")).get(0);
+        List<Booking> bookingInMemory = bookingRepository.findByItem_IdAndStartIsAfterAndStatus(itemId, LocalDateTime.now(),
+                BookingStatus.APPROVED, Sort.by(Sort.Direction.ASC, "start"));
+        if (!bookingInMemory.isEmpty()) {
+            nextBooking = bookingInMemory.get(0);
             next = new BookingForItemDto(nextBooking.getId(), nextBooking.getBooker().getId());
         }
         return next;
@@ -107,7 +127,8 @@ public class ItemServiceImp implements ItemService {
     @Transactional
     @Override
     public CommentResponseDto saveComment(Long itemId, Long userId, CommentRequestDto commentRequest) {
-        User author = getAndCheckUserFromMemory(userId);
+        User author = userRepository.findById(userId)
+                .orElseThrow(() -> new ExistenceException("Пользвателя с id=" + userId + " не найден в базе."));
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new ExistenceException("Предмет с id=" + itemId + " не найден в базе."));
         if (bookingRepository.findByItem_IdAndBooker_IdAndEndIsBefore(itemId, userId, LocalDateTime.now()).isEmpty()) {
@@ -120,28 +141,7 @@ public class ItemServiceImp implements ItemService {
         return CommentsMapper.toCommentResponseDto(commentRepository.save(comment));
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public List<ItemResponseDto> getUsersItem(Long userId) {
-        getAndCheckUserFromMemory(userId);
 
-        List<ItemResponseDto> items = new ArrayList<>();
-        List<Item> itemsInMemory = itemRepository.findAllByOwner(userId);
-        for (Item item: itemsInMemory) {
-            BookingForItemDto last = new BookingForItemDto();
-            BookingForItemDto next = new BookingForItemDto();
-            if (item.getOwner().equals(userId)) {
-                    last = getLastBookingByItemId(item.getId());
-                    next = getNextBookingByItemId(item.getId());
-
-            }
-            List<Comment> comments = commentRepository.findByItem_Id(item.getId());
-            items.add(ItemMapper.toItemWithBookingDto(item, last, next, comments.stream()
-                    .map(CommentsMapper::toCommentResponseDto).collect(Collectors.toList())));
-        }
-
-        return items.stream().sorted(Comparator.comparing(ItemResponseDto::getId)).collect(Collectors.toList());
-    }
 
     @Transactional
     @Override
@@ -177,9 +177,10 @@ public class ItemServiceImp implements ItemService {
                 .collect(Collectors.toList());
     }
 
-    private User getAndCheckUserFromMemory(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new ExistenceException("Пользвателя с id=" + userId + " не найден в базе."));
+    private void checkUserFromMemory(Long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new ExistenceException("Пользвателя с id=" + userId + " не найден в базе.");
+        }
     }
 
 }

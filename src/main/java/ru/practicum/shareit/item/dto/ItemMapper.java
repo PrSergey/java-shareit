@@ -2,8 +2,9 @@ package ru.practicum.shareit.item.dto;
 
 import ru.practicum.shareit.booking.dto.BookingForItemDto;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.model.ItemWithComments;
 
-import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class ItemMapper {
@@ -18,10 +19,9 @@ public class ItemMapper {
         );
     }
 
-    public static ItemResponseDto toItemWithBookingDto(Item item,
+    public static ItemResponseDto toItemWithBookingDto(ItemWithComments item,
                                                        BookingForItemDto lastBooking,
-                                                       BookingForItemDto nextBooking,
-                                                       List<CommentResponseDto> comments) {
+                                                       BookingForItemDto nextBooking) {
         return new ItemResponseDto(
                 item.getId(),
                 item.getName(),
@@ -30,20 +30,23 @@ public class ItemMapper {
                 item.getRequest() != null ? item.getRequest().getId() : null,
                 lastBooking,
                 nextBooking,
-                comments
+                item.getComments()
+                        .stream()
+                        .map(CommentsMapper::toCommentResponseDto).collect(Collectors.toList())
         );
     }
 
 
-    public static ItemResponseDto toItemWithBookingDto(Item item,
-                                                       List<CommentResponseDto> comments) {
+    public static ItemResponseDto toItemWithBookingDto(ItemWithComments item) {
         return new ItemResponseDto(
                 item.getId(),
                 item.getName(),
                 item.getDescription(),
                 item.getAvailable(),
                 item.getRequest() != null ? item.getRequest().getId() : null,
-                comments
+                item.getComments()
+                        .stream()
+                        .map(CommentsMapper::toCommentResponseDto).collect(Collectors.toList())
         );
     }
 

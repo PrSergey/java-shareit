@@ -48,7 +48,8 @@ public class UserServiceImp implements UserService {
     @Transactional
     public UserDto update(Long userId, UserDto userDto) {
         User user = UserMapper.fromUserDto(userDto);
-        User userInMemory = userRepository.findById(userId).get();
+        User userInMemory = userRepository.findById(userId)
+                .orElseThrow(() -> new ExistenceException("Пользвателя с id=" + userId + " не найден в базе."));
         if (user.getName() != null) {
             userInMemory.setName(user.getName());
         }
@@ -61,8 +62,9 @@ public class UserServiceImp implements UserService {
     @Override
     @Transactional
     public void deleteUser(Long userId) {
-        userRepository.findById(userId)
-                .orElseThrow(() -> new ExistenceException("Пользвателя с id=" + userId + " не найден в базе."));
+        if (!userRepository.existsById(userId)) {
+            throw new ExistenceException("Пользвателя с id=" + userId + " не найден в базе.");
+        }
         userRepository.deleteById(userId);
     }
 

@@ -166,8 +166,9 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private void checkingPresenceOfUser(Long userId) {
-        userRepository.findById(userId)
-                .orElseThrow(() -> new ExistenceException("Пользвателя с id=" + userId + " не найден в базе."));
+        if (!userRepository.existsById(userId)) {
+            throw new ExistenceException("Пользвателя с id=" + userId + " не найден в базе.");
+        }
     }
 
 }
