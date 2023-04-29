@@ -15,4 +15,11 @@ public class BookingMapper {
         );
     }
 
+    public static BookingForItemDto toBookingForItemDto(Booking booking) {
+        return new BookingForItemDto(
+                booking.getId(),
+                booking.getBooker().getId()
+        );
+    }
+
 }
