@@ -13,7 +13,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleIncorrectParameterException(final ValidationException e) {
         return new ErrorResponse(
-                String.format("Ошибка с полем \"%s\".", e.getMessage())
+                String.format(e.getMessage())
         );
     }
 

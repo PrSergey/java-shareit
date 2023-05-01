@@ -1,6 +1,11 @@
 package ru.practicum.shareit.item.dto;
 
+import ru.practicum.shareit.booking.dto.BookingForItemDto;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class ItemMapper {
@@ -12,6 +17,36 @@ public class ItemMapper {
                 item.getDescription(),
                 item.getAvailable(),
                 item.getRequest() != null ? item.getRequest().getId() : null
+        );
+    }
+
+    public static ItemResponseDto toItemWithBookingDto(Item item,
+                                                       BookingForItemDto lastBooking,
+                                                       BookingForItemDto nextBooking,
+                                                       List<CommentResponseDto> comments) {
+        return new ItemResponseDto(
+                item.getId(),
+                item.getName(),
+                item.getDescription(),
+                item.getAvailable(),
+                item.getRequest() != null ? item.getRequest().getId() : null,
+                lastBooking,
+                nextBooking,
+                comments
+        );
+    }
+
+
+    public static ItemResponseDto toItemWithBookingDto(Item item, List<Comment> comments) {
+        return new ItemResponseDto(
+                item.getId(),
+                item.getName(),
+                item.getDescription(),
+                item.getAvailable(),
+                item.getRequest() != null ? item.getRequest().getId() : null,
+                comments.stream()
+                        .map(CommentsMapper::toCommentResponseDto)
+                        .collect(Collectors.toList())
         );
     }
 
