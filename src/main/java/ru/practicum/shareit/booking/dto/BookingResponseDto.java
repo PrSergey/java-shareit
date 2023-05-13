@@ -28,10 +28,4 @@ public class BookingResponseDto {
 
     private BookingStatus status;
 
-    public BookingResponseDto(Long id, Item item, User booker, BookingStatus status) {
-        this.id = id;
-        this.item = item;
-        this.booker = booker;
-        this.status = status;
-    }
 }

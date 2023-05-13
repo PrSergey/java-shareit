@@ -1,10 +1,9 @@
 package ru.practicum.shareit.user.dto;
 
-import lombok.AllArgsConstructor;
 import ru.practicum.shareit.user.model.User;
 
 
-@AllArgsConstructor
+
 public class UserMapper {
 
     public static UserDto toUserDto(User user) {

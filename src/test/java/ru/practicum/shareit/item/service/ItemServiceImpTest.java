@@ -76,7 +76,8 @@ class ItemServiceImpTest {
     }
 
     private Comment createComment() {
-        return Comment.builder()
+       // return new Comment(1L, "text comments", new Item(), (new User(), LocalDateTime.now());
+            return Comment.builder()
                 .id(1L)
                 .created(LocalDateTime.now())
                 .authorName(new User())
