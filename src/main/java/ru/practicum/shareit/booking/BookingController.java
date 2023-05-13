@@ -2,10 +2,12 @@ package ru.practicum.shareit.booking;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.service.BookingService;
+import ru.practicum.shareit.exception.ValidationException;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -45,17 +47,33 @@ public class BookingController {
     @GetMapping
     public List<BookingResponseDto> getBookingByBooker(@RequestHeader(authentificatedUser) Long userId,
                                                        @RequestParam (value = "state", defaultValue = "ALL")
-                                                       String bookingState) {
+                                                       String bookingState,
+                                                       @RequestParam (name = "from", defaultValue = "0") int from,
+                                                       @RequestParam (name = "size", defaultValue = "10") int size) {
         log.info("Запрос на получение списка всех бронирований текущего пользователя с id= {}", userId);
-        return bookingService.getBookingByBooker(userId, bookingState);
+        if (from < 0) {
+            throw new ValidationException("Индекс певрого элемента старницы не может быть отрицательной.");
+        } else if (size < 1) {
+            throw new ValidationException("Количество элементов для отображения не может быть отрицательной.");
+        }
+        PageRequest pageRequest = PageRequest.of(from / size, size);
+        return bookingService.getBookingByBooker(userId, bookingState, pageRequest);
     }
 
     @GetMapping("/owner")
     public List<BookingResponseDto> getBookingByOwner(@RequestHeader(authentificatedUser) Long userId,
                                                       @RequestParam (value = "state", defaultValue = "ALL")
-                                               String bookingState) {
+                                                      String bookingState,
+                                                      @RequestParam (name = "from", defaultValue = "0") int from,
+                                                      @RequestParam (name = "size", defaultValue = "10") int size) {
         log.info("Запрос на получение списка бронирований для всех вещей текущего пользователя с id= {}", userId);
-        return bookingService.getBookingByOwner(userId, bookingState);
+        if (from < 0) {
+            throw new ValidationException("Индекс певрого элемента старницы не может быть отрицательной.");
+        } else if (size < 1) {
+            throw new ValidationException("Количество элементов для отображения не может быть отрицательной.");
+        }
+        PageRequest pageRequest = PageRequest.of(from / size, size);
+        return bookingService.getBookingByOwner(userId, bookingState, pageRequest);
     }
 
 

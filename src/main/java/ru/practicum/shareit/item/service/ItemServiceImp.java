@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,7 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.storage.CommentRepository;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.storage.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
@@ -36,6 +38,8 @@ public class ItemServiceImp implements ItemService {
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
 
+    private final ItemRequestRepository itemRequestRepository;
+
 
     @Transactional
     @Override
@@ -54,6 +58,10 @@ public class ItemServiceImp implements ItemService {
 
         Item item = ItemMapper.fromItemDto(itemDto);
         item.setOwner(userId);
+
+        if (itemDto.getRequestId() != null) {
+            item.setRequest(itemRequestRepository.findById(itemDto.getRequestId()).get());
+        }
 
         return ItemMapper.toItemDto(itemRepository.save(item));
     }
@@ -81,11 +89,11 @@ public class ItemServiceImp implements ItemService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<ItemResponseDto> getUsersItem(Long userId) {
+    public List<ItemResponseDto> getUsersItem(Long userId, PageRequest pageRequest) {
         checkUserFromMemory(userId);
 
         List<ItemResponseDto> items = new ArrayList<>();
-        Map<Long, Item> itemsInMemory = itemRepository.findAllByOwner(userId)
+        Map<Long, Item> itemsInMemory = itemRepository.findAllByOwner(userId, pageRequest)
                 .stream()
                 .collect(Collectors.toMap(Item::getId, Function.identity()));
         Map<Long, List<CommentResponseDto>> commentMap = commentRepository.findByItem_OwnerEquals(userId)
@@ -95,7 +103,7 @@ public class ItemServiceImp implements ItemService {
 
         List<Booking> bookingsLast = bookingRepository
                 .findByItem_OwnerAndStartIsBeforeAndStatus(userId, LocalDateTime.now(),
-                BookingStatus.APPROVED, Sort.by(Sort.Direction.DESC, "start"));
+                BookingStatus.APPROVED, Sort.by(Sort.Direction.DESC, "start"), pageRequest);
         Map<Long, List<Booking>> bookingsLastMap = bookingsLast
                 .stream()
                 .collect(Collectors.groupingBy(booking -> booking.getItem().getId(),
@@ -103,7 +111,7 @@ public class ItemServiceImp implements ItemService {
 
         List<Booking> bookingsNext = bookingRepository
                 .findByItem_OwnerAndStartIsAfterAndStatus(userId, LocalDateTime.now(),
-                        BookingStatus.APPROVED, Sort.by(Sort.Direction.DESC, "start"));
+                        BookingStatus.APPROVED, Sort.by(Sort.Direction.DESC, "start"), pageRequest);
         Map<Long, List<Booking>> bookingsNextMap = bookingsNext
                 .stream()
                 .collect(Collectors.groupingBy(booking -> booking.getItem().getId(),
@@ -202,11 +210,11 @@ public class ItemServiceImp implements ItemService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<ItemDto> searchItem(String text) {
+    public List<ItemDto> searchItem(String text, PageRequest pageRequest) {
         if (text.isBlank()) {
             return new ArrayList<>();
         }
-        return itemRepository.itemWithText(text)
+        return itemRepository.itemWithText(text, pageRequest)
                 .stream()
                 .map(ItemMapper::toItemDto)
                 .collect(toList());

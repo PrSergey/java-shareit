@@ -1,13 +1,14 @@
 package ru.practicum.shareit.item.model;
 
 import lombok.*;
-import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.request.model.ItemRequest;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.util.Objects;
 
 
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -34,7 +35,7 @@ public class Item {
     @Column(name = "is_available")
     private Boolean available;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "request_id")
     private ItemRequest request;
 
@@ -42,6 +43,13 @@ public class Item {
         this.name = name;
         this.description = description;
         this.available = available;
+    }
+
+    public Item(String name, String description, Boolean available, ItemRequest request) {
+        this.name = name;
+        this.description = description;
+        this.available = available;
+        this.request = request;
     }
 
 
