@@ -2,7 +2,9 @@ package ru.practicum.shareit.item;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.CommentRequestDto;
 import ru.practicum.shareit.item.dto.CommentResponseDto;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -37,9 +39,17 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemResponseDto> getUsersItem(@RequestHeader(authentificatedUser) Long userId) {
+    public List<ItemResponseDto> getUsersItem(@RequestHeader(authentificatedUser) Long userId,
+                                              @RequestParam (name = "from", defaultValue = "0") int from,
+                                              @RequestParam (name = "size", defaultValue = "10") int size) {
         log.info("Запрос на получение всех вещей пользователя с id= {}", userId);
-        return itemService.getUsersItem(userId);
+        if (from < 0) {
+            throw new ValidationException("Индекс певрого элемента старницы не может быть отрицательной.");
+        } else if (size < 1) {
+            throw new ValidationException("Количество элементов для отображения не может быть отрицательной.");
+        }
+        PageRequest pageRequest = PageRequest.of(from / size, size);
+        return itemService.getUsersItem(userId, pageRequest);
     }
 
     @PatchMapping("/{itemId}")
@@ -52,17 +62,25 @@ public class ItemController {
 
     @GetMapping ("/search")
     public List<ItemDto> searchItem(@RequestHeader(authentificatedUser) Long userId,
-                                    @RequestParam(value = "text", required = false) String text) {
+                                    @RequestParam(value = "text", required = false) String text,
+                                    @RequestParam (name = "from", defaultValue = "0") int from,
+                                    @RequestParam (name = "size", defaultValue = "10") int size) {
         log.info("Запрос на поиск вещей с текстом {}", text);
-        return itemService.searchItem(text);
+        if (from < 0) {
+            throw new ValidationException("Индекс певрого элемента старницы не может быть отрицательной.");
+        } else if (size < 1) {
+            throw new ValidationException("Количество элементов для отображения не может быть отрицательной.");
+        }
+        PageRequest pageRequest = PageRequest.of(from / size, size);
+        return itemService.searchItem(text, pageRequest);
     }
 
-    @PostMapping("{itemId}/comment")
+    @PostMapping("/{itemId}/comment")
     public CommentResponseDto addComment(@RequestHeader(authentificatedUser) Long userId,
                                          @PathVariable Long itemId,
                                          @RequestBody @Valid CommentRequestDto commentRequestDto) {
         log.info("Запрос на создание комментария {} для вещи с id= {}", commentRequestDto, itemId);
-        return itemService.saveComment(itemId,userId, commentRequestDto);
+        return itemService.saveComment(itemId, userId, commentRequestDto);
     }
 
 }

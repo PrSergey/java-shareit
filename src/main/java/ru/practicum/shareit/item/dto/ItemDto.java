@@ -18,7 +18,7 @@ public class ItemDto {
 
     private Boolean available;
 
-    private Long request;
+    private Long requestId;
 
     public ItemDto() {
     }
@@ -34,4 +34,10 @@ public class ItemDto {
         this.available = available;
     }
 
+    public ItemDto(String name, String description, Boolean available, Long requestId) {
+        this.name = name;
+        this.description = description;
+        this.available = available;
+        this.requestId = requestId;
+    }
 }
