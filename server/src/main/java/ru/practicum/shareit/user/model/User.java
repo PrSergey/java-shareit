@@ -3,7 +3,6 @@ package ru.practicum.shareit.user.model;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
 
 @Builder
 @AllArgsConstructor
@@ -23,7 +22,6 @@ public class User {
     private String name;
 
     @Column(name = "email", nullable = false)
-    @Email
     private String email;
 
     @Override

@@ -4,12 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.request.dto.ItemRequestResponseDto;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.service.ItemRequestService;
 
-import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -28,7 +26,7 @@ public class ItemRequestController {
     @PostMapping
     public ItemRequestResponseDto add(
             @RequestHeader(authentificatedUser) Long userId,
-            @RequestBody @Valid ItemRequestDto itemRequest) {
+            @RequestBody ItemRequestDto itemRequest) {
         log.info("Post-запрос на создание запроса на вещь");
         return itemRequestService.save(userId, itemRequest);
     }

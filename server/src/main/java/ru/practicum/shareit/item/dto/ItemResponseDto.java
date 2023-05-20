@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import ru.practicum.shareit.booking.dto.BookingForItemDto;
 
-import javax.validation.constraints.Size;
 import java.util.List;
 
 @Data
@@ -12,7 +11,6 @@ import java.util.List;
 public class ItemResponseDto {
     private Long id;
 
-    @Size(max = 100)
     private String name;
 
     private String description;
