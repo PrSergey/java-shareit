@@ -6,12 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
-import javax.validation.Valid;
 import java.util.List;
 
-/**
- * TODO Sprint add-controllers.
- */
 @Slf4j
 @RestController
 @RequestMapping("/users")
@@ -21,7 +17,7 @@ public class UserController {
     UserService userService;
 
     @PostMapping
-    public UserDto add(@RequestBody@Valid UserDto user) {
+    public UserDto add(@RequestBody UserDto user) {
         log.info("Запрос на создание нового пользователя {}", user);
         return userService.add(user);
     }
@@ -40,7 +36,7 @@ public class UserController {
 
     @PatchMapping("/{userId}")
     public UserDto update(@PathVariable Long userId,
-                            @RequestBody@Valid UserDto user) {
+                            @RequestBody UserDto user) {
         log.info("Обновление пользователя с id= {}", userId);
         return userService.update(userId, user);
     }

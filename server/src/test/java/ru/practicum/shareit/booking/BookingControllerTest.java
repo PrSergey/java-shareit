@@ -46,60 +46,6 @@ class BookingControllerTest {
 
     @SneakyThrows
     @Test
-    void add_whenBookingDtoIsNotValidEnd_thenReturnBadRequest() {
-        BookingRequestDto bookingToSave = new BookingRequestDto();
-        bookingToSave.setItemId(1L);
-        bookingToSave.setStart(LocalDateTime.now().plusMinutes(1L));
-        bookingToSave.setEnd(LocalDateTime.now().minusDays(2L));
-        long userId = 0L;
-
-        mvc.perform(post(PATH)
-                        .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(bookingToSave))
-                        .header("X-Sharer-User-Id", userId))
-                .andExpect(status().isBadRequest());
-
-        verify(bookingService, never()).save(userId, bookingToSave);
-    }
-
-    @SneakyThrows
-    @Test
-    void add_whenBookingDtoIsNotValidStart_thenReturnBadRequest() {
-        BookingRequestDto bookingToSave = new BookingRequestDto();
-        bookingToSave.setItemId(1L);
-        bookingToSave.setStart(LocalDateTime.now().minusDays(1L));
-        bookingToSave.setEnd(LocalDateTime.now().plusMinutes(2L));
-        long userId = 0L;
-
-        mvc.perform(post(PATH)
-                .contentType("application/json")
-                .content(objectMapper.writeValueAsString(bookingToSave))
-                        .header("X-Sharer-User-Id", userId))
-                .andExpect(status().isBadRequest());
-
-        verify(bookingService, never()).save(userId, bookingToSave);
-    }
-
-    @SneakyThrows
-    @Test
-    void add_whenBookingDtoIsNotValid_thenReturnBadRequest() {
-        BookingRequestDto bookingToSave = new BookingRequestDto();
-        bookingToSave.setItemId(null);
-        bookingToSave.setStart(LocalDateTime.now().plusMinutes(1L));
-        bookingToSave.setEnd(LocalDateTime.now().plusMinutes(2L));
-        long userId = 0L;
-
-        mvc.perform(post(PATH)
-                        .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(bookingToSave))
-                        .header("X-Sharer-User-Id", userId))
-                .andExpect(status().isBadRequest());
-
-        verify(bookingService, never()).save(userId, bookingToSave);
-    }
-
-    @SneakyThrows
-    @Test
     void add_whenBookingDtoValid_thenSave() {
         BookingRequestDto bookingToSave = new BookingRequestDto();
         bookingToSave.setItemId(1L);

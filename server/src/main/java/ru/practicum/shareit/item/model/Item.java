@@ -4,7 +4,6 @@ import lombok.*;
 import ru.practicum.shareit.request.model.ItemRequest;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
 import java.util.Objects;
 
 
@@ -26,7 +25,6 @@ public class Item {
     private Long owner;
 
     @Column(name = "name", nullable = false)
-    @Size(max = 100)
     private String name;
 
     @Column(name = "description")

@@ -31,19 +31,6 @@ class UserControllerIT {
 
     private final String path = "/users";
 
-    @SneakyThrows
-    @Test
-    void add_whenUsersEmailIsNotValid_thenBadRequestThrow() {
-        UserDto userForSave = new UserDto();
-        userForSave.setEmail("email.ru");
-
-        mvc.perform(post(path)
-                .contentType("application/json")
-                .content(objectMapper.writeValueAsString(userForSave)))
-                .andExpect(status().isBadRequest());
-
-        verify(userService, never()).add(userForSave);
-    }
 
     @SneakyThrows
     @Test
@@ -102,21 +89,6 @@ class UserControllerIT {
 
         verify(userService).getAll();
         assertEquals(getUser, objectMapper.writeValueAsString(listUsers));
-    }
-
-    @SneakyThrows
-    @Test
-    void update_whenUserIsNotValid_thenNotUpdateAndBadRequestThrow() {
-        long userId = 2L;
-        UserDto userForSave = new UserDto();
-        userForSave.setEmail("email.ru");
-
-        mvc.perform(patch(path + "/{userId}", userId)
-                        .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(userForSave)))
-                .andExpect(status().isBadRequest());
-
-        verify(userService, never()).update(userId, userForSave);
     }
 
     @SneakyThrows

@@ -154,23 +154,23 @@ class ItemControllerIT {
         verify(itemService).searchItem(text, pageRequest);
         assertEquals(objectMapper.writeValueAsString(itemDto), contentAsString);
     }
-
-    @SneakyThrows
-    @Test
-    void addComment_whenCommentRequestDtoIsNotValid_thenNotFound() {
-        long itemId = 1L;
-        long userId = 1L;
-        CommentRequestDto commentForAdd = new CommentRequestDto();
-        commentForAdd.setText("");
-
-        mvc.perform(post(PATH + "/{itemId}/comment", itemId)
-                .header("X-Sharer-User-Id", userId)
-                .contentType("application/json")
-                .content(objectMapper.writeValueAsString(commentForAdd)))
-                .andExpect(status().isBadRequest());
-
-        verify(itemService, never()).saveComment(itemId, userId, commentForAdd);
-    }
+//
+//    @SneakyThrows
+//    @Test
+//    void addComment_whenCommentRequestDtoIsNotValid_thenNotFound() {
+//        long itemId = 1L;
+//        long userId = 1L;
+//        CommentRequestDto commentForAdd = new CommentRequestDto();
+//        commentForAdd.setText("");
+//
+//        mvc.perform(post(PATH + "/{itemId}/comment", itemId)
+//                .header("X-Sharer-User-Id", userId)
+//                .contentType("application/json")
+//                .content(objectMapper.writeValueAsString(commentForAdd)))
+//                .andExpect(status().isBadRequest());
+//
+//        verify(itemService, never()).saveComment(itemId, userId, commentForAdd);
+//    }
 
     @SneakyThrows
     @Test

@@ -7,7 +7,6 @@ import ru.practicum.shareit.constant.BookingStatus;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Data
@@ -17,7 +16,6 @@ public class BookingResponseDto {
 
     private Long id;
 
-    @NotNull
     private Item item;
 
     private User booker;

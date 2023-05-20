@@ -4,14 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.CommentRequestDto;
 import ru.practicum.shareit.item.dto.CommentResponseDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemResponseDto;
 import ru.practicum.shareit.item.service.ItemService;
 
-import javax.validation.Valid;
 import java.util.List;
 
 
@@ -68,7 +66,7 @@ public class ItemController {
     @PostMapping("/{itemId}/comment")
     public CommentResponseDto addComment(@RequestHeader(authentificatedUser) Long userId,
                                          @PathVariable Long itemId,
-                                         @RequestBody @Valid CommentRequestDto commentRequestDto) {
+                                         @RequestBody CommentRequestDto commentRequestDto) {
         log.info("Запрос на создание комментария {} для вещи с id= {}", commentRequestDto, itemId);
         return itemService.saveComment(itemId, userId, commentRequestDto);
     }

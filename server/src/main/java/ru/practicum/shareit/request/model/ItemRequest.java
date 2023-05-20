@@ -5,8 +5,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import ru.practicum.shareit.item.model.Item;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -25,11 +23,9 @@ public class ItemRequest {
     private Long id;
 
     @Column(name = "requestor", nullable = false)
-    @NotNull
     private Long requestor;
 
     @Column(name = "description", nullable = false)
-    @NotEmpty
     private String description;
 
     @Column(name = "created")

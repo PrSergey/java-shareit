@@ -35,22 +35,22 @@ class ItemRequestControllerTest {
     private final String path = "/requests";
 
     private final String authentificatedUser = "X-Sharer-User-Id";
-
-    @SneakyThrows
-    @Test
-    void add_whenItemRequestDtoIsNotValid_thenBadRequestTrow() {
-        ItemRequestDto itemRequestForAdd = new ItemRequestDto();
-        Long userId = 1L;
-        itemRequestForAdd.setDescription("");
-
-        mvc.perform(post(path)
-                .header(authentificatedUser, userId)
-                .contentType("application/json")
-                .content(objectMapper.writeValueAsString(itemRequestForAdd)))
-                .andExpect(status().isBadRequest());
-
-        verify(itemRequestService, never()).save(userId, itemRequestForAdd);
-    }
+//
+//    @SneakyThrows
+//    @Test
+//    void add_whenItemRequestDtoIsNotValid_thenBadRequestTrow() {
+//        ItemRequestDto itemRequestForAdd = new ItemRequestDto();
+//        Long userId = 1L;
+//        itemRequestForAdd.setDescription("");
+//
+//        mvc.perform(post(path)
+//                .header(authentificatedUser, userId)
+//                .contentType("application/json")
+//                .content(objectMapper.writeValueAsString(itemRequestForAdd)))
+//                .andExpect(status().isBadRequest());
+//
+//        verify(itemRequestService, never()).save(userId, itemRequestForAdd);
+//    }
 
     @SneakyThrows
     @Test
