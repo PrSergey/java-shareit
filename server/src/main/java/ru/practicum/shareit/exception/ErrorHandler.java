@@ -18,14 +18,6 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleIncorrectEmailException(final EmailException e) {
-        return new ErrorResponse(
-                String.format(e.getMessage())
-        );
-    }
-
-    @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleUserNotFoundException(final ExistenceException e) {
         return new ErrorResponse(e.getMessage());
