@@ -4,22 +4,20 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.request.dto.ItemRequestResponseDto;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
+import ru.practicum.shareit.request.dto.ItemRequestResponseDto;
 import ru.practicum.shareit.request.service.ItemRequestService;
 
 import java.util.List;
 
-/**
- * TODO Sprint add-item-requests.
- */
+import static ru.practicum.utilShareit.constant.AuthenticatedUser.authentificatedUser;
+
+
 @RestController
 @RequestMapping(path = "/requests")
 @Slf4j
 @AllArgsConstructor
 public class ItemRequestController {
-
-    private final String authentificatedUser = "X-Sharer-User-Id";
 
     ItemRequestService itemRequestService;
 
@@ -42,7 +40,7 @@ public class ItemRequestController {
     public ItemRequestResponseDto getItemRequestById(
             @RequestHeader(authentificatedUser) Long userId,
             @PathVariable Long requestId) {
-        log.info("Get-запрос на получение всех своих запросов на вещь");
+        log.info("Get-запрос на получение запроса на вещь");
         return itemRequestService.getItemRequestById(userId, requestId);
     }
 

@@ -5,14 +5,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.client.ItemClient;
-import ru.practicum.shareit.item.dto.CommentRequestDto;
-import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.utilShareit.exception.ValidationException;
+import ru.practicum.utilShareit.item.CommentRequestDto;
+import ru.practicum.utilShareit.item.ItemDto;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
+
+import static ru.practicum.utilShareit.constant.AuthenticatedUser.authentificatedUser;
 
 
 @Slf4j
@@ -23,8 +25,6 @@ import javax.validation.constraints.PositiveOrZero;
 public class ItemController {
 
     private final ItemClient itemClient;
-
-    private final String authentificatedUser = "X-Sharer-User-Id";
 
     @PostMapping
     public ResponseEntity<Object> add(@RequestHeader(authentificatedUser) Long userId,

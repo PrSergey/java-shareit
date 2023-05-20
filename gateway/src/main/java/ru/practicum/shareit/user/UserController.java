@@ -5,22 +5,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.user.client.UserClient;
-import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.utilShareit.exception.ValidationException;
+import ru.practicum.utilShareit.user.UserDto;
 
 import javax.validation.Valid;
 
-/**
- * TODO Sprint add-controllers.
- */
 @Slf4j
 @RestController
 @RequestMapping("/users")
 @AllArgsConstructor
 @Validated
 public class UserController {
-
 
     UserClient userClient;
 
