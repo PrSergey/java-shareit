@@ -6,11 +6,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.client.ItemRequestClient;
-import ru.practicum.shareit.request.dto.ItemRequestDto;
+import ru.practicum.utilShareit.request.ItemRequestDto;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
+
+import static ru.practicum.utilShareit.constant.AuthenticatedUser.authentificatedUser;
+
 
 @RestController
 @RequestMapping(path = "/requests")
@@ -20,9 +23,6 @@ import javax.validation.constraints.PositiveOrZero;
 public class ItemRequestController {
 
     ItemRequestClient itemRequestClient;
-
-    private final String authentificatedUser = "X-Sharer-User-Id";
-
 
     @PostMapping
     public ResponseEntity<Object> add(
@@ -43,7 +43,7 @@ public class ItemRequestController {
     public ResponseEntity<Object> getItemRequestById(
             @RequestHeader(authentificatedUser) Long userId,
             @PathVariable Long requestId) {
-        log.info("Get-запрос на получение всех своих запросов на вещь");
+        log.info("Get-запрос на получение запроса на вещь");
         return itemRequestClient.getItemRequestById(userId, requestId);
     }
 

@@ -12,6 +12,8 @@ import ru.practicum.shareit.item.service.ItemService;
 
 import java.util.List;
 
+import static ru.practicum.utilShareit.constant.AuthenticatedUser.authentificatedUser;
+
 
 @Slf4j
 @RestController
@@ -20,7 +22,6 @@ import java.util.List;
 public class ItemController {
 
     ItemService itemService;
-    private final String authentificatedUser = "X-Sharer-User-Id";
 
     @PostMapping
     public ItemDto add(@RequestHeader(authentificatedUser) Long userId,

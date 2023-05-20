@@ -10,9 +10,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.storage.BookingRepository;
-import ru.practicum.shareit.constant.BookingStatus;
-import ru.practicum.shareit.exception.ExistenceException;
-import ru.practicum.shareit.exception.ValidationException;
+import ru.practicum.utilShareit.constant.BookingStatus;
+import ru.practicum.utilShareit.exception.ExistenceException;
+import ru.practicum.utilShareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
@@ -76,7 +76,6 @@ class ItemServiceImpTest {
     }
 
     private Comment createComment() {
-       // return new Comment(1L, "text comments", new Item(), (new User(), LocalDateTime.now());
             return Comment.builder()
                 .id(1L)
                 .created(LocalDateTime.now())

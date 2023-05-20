@@ -5,13 +5,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.booking.dto.BookingRequestDto;
-import ru.practicum.shareit.constant.BookingState;
-import ru.practicum.shareit.exception.ValidationException;
+import ru.practicum.shareit.booking.client.BookingClient;
+import ru.practicum.utilShareit.booking.BookingRequestDto;
+import ru.practicum.utilShareit.constant.BookingState;
+import ru.practicum.utilShareit.exception.ValidationException;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
+
+import static ru.practicum.utilShareit.constant.AuthenticatedUser.authentificatedUser;
+
 
 @Slf4j
 @RestController
@@ -21,7 +25,6 @@ import javax.validation.constraints.PositiveOrZero;
 public class BookingController {
 
     private final BookingClient bookingClient;
-    private final String authentificatedUser = "X-Sharer-User-Id";
 
     @PostMapping
     public ResponseEntity<Object> add(@RequestHeader(authentificatedUser) Long userID,

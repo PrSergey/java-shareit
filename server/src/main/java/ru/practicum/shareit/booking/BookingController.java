@@ -5,8 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
-import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.service.BookingService;
+import ru.practicum.utilShareit.booking.BookingRequestDto;
+
+import static ru.practicum.utilShareit.constant.AuthenticatedUser.authentificatedUser;
 
 import java.util.List;
 
@@ -18,7 +20,6 @@ import java.util.List;
 public class BookingController {
 
     BookingService bookingService;
-    private final String authentificatedUser = "X-Sharer-User-Id";
 
     @PostMapping
     public BookingResponseDto add(@RequestHeader(authentificatedUser) Long userID,

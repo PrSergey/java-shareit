@@ -2,10 +2,12 @@ package ru.practicum.shareit.booking.dto;
 
 import org.junit.jupiter.api.Test;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.constant.BookingStatus;
+import ru.practicum.utilShareit.constant.BookingStatus;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.utilShareit.booking.BookingForItemDto;
+import ru.practicum.utilShareit.booking.BookingRequestDto;
 
 import java.time.LocalDateTime;
 

@@ -2,6 +2,10 @@ package ru.practicum.shareit.exception;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.practicum.utilShareit.exception.ErrorHandler;
+import ru.practicum.utilShareit.exception.ErrorResponse;
+import ru.practicum.utilShareit.exception.ExistenceException;
+import ru.practicum.utilShareit.exception.ValidationException;
 
 import static org.junit.jupiter.api.Assertions.*;
 

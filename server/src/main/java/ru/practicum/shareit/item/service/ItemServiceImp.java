@@ -5,28 +5,29 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.booking.dto.BookingForItemDto;
 import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.storage.BookingRepository;
-import ru.practicum.shareit.constant.BookingStatus;
-import ru.practicum.shareit.exception.ExistenceException;
-import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.model.Comment;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.CommentRepository;
 import ru.practicum.shareit.item.storage.ItemRepository;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.storage.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
+import ru.practicum.utilShareit.booking.BookingForItemDto;
+import ru.practicum.utilShareit.constant.BookingStatus;
+import ru.practicum.utilShareit.exception.ExistenceException;
+import ru.practicum.utilShareit.exception.ValidationException;
 
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.toList;
 
 @Service
 @Transactional(readOnly = true)
