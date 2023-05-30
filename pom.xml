@@ -29,7 +29,7 @@
     <modules>
         <module>gateway</module>
         <module>server</module>
-        <module>utilShareit</module>
+        <module>common_classes</module>
     </modules>
 
     <build>
